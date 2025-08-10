@@ -23,7 +23,8 @@ A **modern Django-based Student Management System** with a **clean, responsive, 
 ## 🖼️ Screenshots
 | Home page | Student login | teacher login |
 |-----------|--------------|-------------|
-| ![Dashboard](screenshots/dashboard.png) | ![Student List](screenshots/student_list.png) | ![Add Student](screenshots/add_student.png) |
+| ![Dashboard](Screenshot 2025-08-10 145850.png
+) | ![Student login](Screenshot 2025-08-10 145926.png) | ![teacher login](Screenshot 2025-08-10 145907.png)
 
 *(Replace image paths with actual screenshot filenames from your repo)*
 
