@@ -1,83 +1,125 @@
-{% extends "classroom/base.html" %}
-{% load static %}
+{% extends 'classroom/base.html' %}
 {% block content %}
 
-<div class="student-list">
-<div class="container">
-  {% if messages %}
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
-    {% for message in messages %}
-      <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
-    {% endfor %}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+<div class="container mt-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-users me-2 text-primary"></i>
+        All Students
+      </h1>
+      <p class="text-muted mb-0">Manage and view all registered students</p>
+    </div>
+    <div class="search-container">
+      <input type="search" class="form-control" placeholder="Search students..." id="studentSearch">
+    </div>
   </div>
+
+  {% if students_list %}
+    <div class="row" id="studentsGrid">
+      {% for student in students_list %}
+        <div class="col-lg-4 col-md-6 mb-4 student-item" data-name="{{ student.name }}">
+          <div class="card student-card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+              <div class="student-avatar mb-3">
+                {% if student.student_profile_pic %}
+                  <img src="{{ student.student_profile_pic.url }}" alt="{{ student.name }}" class="rounded-circle">
+                {% else %}
+                  <div class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <h5 class="card-title mb-2">{{ student.name }}</h5>
+              <p class="text-muted mb-3">{{ student.user.username }}</p>
+              
+              <div class="student-info mb-3">
+                <small class="text-muted">
+                  <i class="fas fa-graduation-cap me-1"></i>
+                  Roll No: {{ student.roll_no }}
+                </small>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <a href="{% url 'classroom:student_detail' pk=student.user.pk %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-eye me-1"></i>View Profile
+                </a>
+                <a href="{% url 'classroom:add_student' pk=student.pk %}" class="btn btn-outline-success btn-sm">
+                  <i class="fas fa-plus me-1"></i>Add to Class
+                </a>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <div class="empty-state">
+        <i class="fas fa-user-slash text-muted mb-3" style="font-size: 4rem;"></i>
+        <h3 class="text-muted mb-3">No Students Found</h3>
+        <p class="text-muted">There are no students registered in the system yet.</p>
+      </div>
+    </div>
   {% endif %}
-  <form method='GET' action="{% url 'classroom:students_list' %}" class="searchme">
-    <p>Search Student: <input type='search' name='q' placeholder='Search'></p>
-  </form>
-  <div class="row">
-  {% for student in students_list %}
-  <div class="col-6 col-md-4">
-  <div class="student-box">
-    <div class="imgBx">
-      {% if student.student_profile_pic %}
-      <img src="{{ student.student_profile_pic.url }}" alt="">
-      {% else %}
-      {% if forloop.counter0|divisibleby:"2" %}
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
-      {% else %}
-      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="">
-      {% endif %}
-      {% endif %}
-    </div>
-    <div class="content">
-      <h3>{{ student.name }}</h3>
-      <p><i class="far fa-user"></i> Username: {{ student.user.username }}</p>
-      <p><i class="fal fa-user-tag"></i> Roll No.: {{ student.roll_no }}</p>
-      <p><i class="far fa-phone"></i> Phone: {{ student.phone }}</p>
-      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ student.email }}</p>
-      <a href="{% url 'classroom:add_student' pk=student.pk %}"><p class="add-button">ADD</p> </a>
-    </div>
-  </div>
-  </div>
-  {% endfor %}
-  </div>
-</div>
 </div>
 
+<style>
+  .student-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+  }
+  
+  .student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+  
+  .student-avatar img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    font-size: 2rem;
+  }
+  
+  .search-container {
+    max-width: 300px;
+  }
+  
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+</style>
 
-
-
-<!--
-
-  <div class="jumbotron">
-
-    <h1>Given below is the list of all students.</h1>
-    <h3>Select all the students you want to add in your class.</h3>
-    <form method='GET' action="{% url 'classroom:students_list' %}">
-      <input type='search' name='q' placeholder='Search'>
-    </form>
-
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Roll No.</th>
-          <th scope="col">Name</th>
-          <th scope="col"> </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in students_list %}
-        <tr>
-          <th>{{ student.roll_no }}</th>
-          <th>{{ student.name }}</th>
-          <th> <a class="btn btn-primary" href="{% url 'classroom:add_student' pk=student.pk %}">ADD</a> </th>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
--->
+<script>
+  document.getElementById('studentSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const students = document.querySelectorAll('.student-item');
+    
+    students.forEach(student => {
+      const name = student.getAttribute('data-name').toLowerCase();
+      if (name.includes(searchTerm)) {
+        student.style.display = 'block';
+      } else {
+        student.style.display = 'none';
+      }
+    });
+  });
+</script>
 {% endblock %}

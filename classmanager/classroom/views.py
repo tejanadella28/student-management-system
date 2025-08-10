@@ -91,7 +91,13 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request,user)
-                return HttpResponseRedirect(reverse('home'))
+                # Check if user is teacher or student and redirect accordingly
+                if user.is_teacher:
+                    return HttpResponseRedirect(reverse('classroom:teacher_dashboard'))
+                elif user.is_student:
+                    return HttpResponseRedirect(reverse('classroom:student_dashboard'))
+                else:
+                    return HttpResponseRedirect(reverse('home'))
 
             else:
                 return HttpResponse("Account not active")
@@ -155,7 +161,11 @@ def TeacherUpdateView(request,pk):
     return render(request,'classroom/teacher_update_page.html',{'profile_updated':profile_updated,'form':form})
 
 ## List of all students that teacher has added in their class.
+@login_required
 def class_students_list(request):
+    if not request.user.is_teacher:
+        return redirect('home')
+        
     query = request.GET.get("q", None)
     students = StudentsInClass.objects.filter(teacher=request.user.Teacher)
     students_list = [x.student for x in students]
@@ -222,7 +232,11 @@ def update_marks(request,pk):
 
 ## For writing notice which will be sent to all class students.
 @login_required
+@login_required
 def add_notice(request):
+    if not request.user.is_teacher:
+        return redirect('home')
+        
     notice_sent = False
     teacher = request.user.Teacher
     students = StudentsInClass.objects.filter(teacher=teacher)
@@ -302,7 +316,11 @@ def student_added(request):
     return render(request,'classroom/student_added.html',{})
 
 ## List of students which are not added by teacher in their class.
+@login_required
 def students_list(request):
+    if not request.user.is_teacher:
+        return redirect('home')
+        
     query = request.GET.get("q", None)
     students = StudentsInClass.objects.filter(teacher=request.user.Teacher)
     students_list = [x.student for x in students]
@@ -345,16 +363,22 @@ def teachers_list(request):
 ## Teacher uploading assignment.
 @login_required
 def upload_assignment(request):
+    if not request.user.is_teacher:
+        return redirect('home')
+        
     assignment_uploaded = False
     teacher = request.user.Teacher
-    students = Student.objects.filter(user_student_name__teacher=request.user.Teacher)
+    # Get students in the teacher's class
+    students_in_class = StudentsInClass.objects.filter(teacher=teacher)
+    students = [x.student for x in students_in_class]
+    
     if request.method == 'POST':
         form = AssignmentForm(request.POST, request.FILES)
         if form.is_valid():
             upload = form.save(commit=False)
             upload.teacher = teacher
-            students = Student.objects.filter(user_student_name__teacher=request.user.Teacher)
             upload.save()
+            # Add all students in the teacher's class to this assignment
             upload.student.add(*students)
             assignment_uploaded = True
     else:
@@ -364,10 +388,21 @@ def upload_assignment(request):
 ## Students getting the list of all the assignments uploaded by their teacher.
 @login_required
 def class_assignment(request):
+    if not request.user.is_student:
+        return redirect('home')
+        
     student = request.user.Student
-    assignment = SubmitAssignment.objects.filter(student=student)
-    assignment_list = [x.submitted_assignment for x in assignment]
-    return render(request,'classroom/class_assignment.html',{'student':student,'assignment_list':assignment_list})
+    # Get all assignments where the student is included
+    assignment_list = ClassAssignment.objects.filter(student=student)
+    # Get submitted assignments to show submission status
+    submitted_assignments = SubmitAssignment.objects.filter(student=student)
+    submitted_assignment_ids = [x.submitted_assignment.id for x in submitted_assignments]
+    
+    return render(request,'classroom/class_assignment.html',{
+        'student': student,
+        'assignment_list': assignment_list,
+        'submitted_assignment_ids': submitted_assignment_ids
+    })
 
 ## List of all the assignments uploaded by the teacher himself.
 @login_required
@@ -447,6 +482,51 @@ def change_password(request):
             return redirect('home')
         else:
             return redirect('classroom:change_password')
+
+# Teacher Dashboard
+@login_required
+def teacher_dashboard(request):
+    if not request.user.is_teacher:
+        return redirect('home')
+    
+    try:
+        teacher = request.user.Teacher
+        # Get teacher's students
+        students_in_class = StudentsInClass.objects.filter(teacher=teacher)
+        assignments = ClassAssignment.objects.filter(teacher=teacher)
+        
+        context = {
+            'teacher': teacher,
+            'students_count': students_in_class.count(),
+            'assignments_count': assignments.count(),
+            'recent_assignments': assignments[:5],
+            'students_in_class': students_in_class[:10]
+        }
+        return render(request, 'classroom/teacher_dashboard.html', context)
+    except:
+        return redirect('home')
+
+# Student Dashboard  
+@login_required
+def student_dashboard(request):
+    if not request.user.is_student:
+        return redirect('home')
+    
+    try:
+        student = request.user.Student
+        assignments = ClassAssignment.objects.filter(student=student)
+        marks = StudentMarks.objects.filter(student=student)
+        
+        context = {
+            'student': student,
+            'assignments_count': assignments.count(),
+            'marks_count': marks.count(),
+            'recent_assignments': assignments[:5],
+            'recent_marks': marks[:5]
+        }
+        return render(request, 'classroom/student_dashboard.html', context)
+    except:
+        return redirect('home')
     else:
         form = PasswordChangeForm(user=request.user)
         args = {'form':form}

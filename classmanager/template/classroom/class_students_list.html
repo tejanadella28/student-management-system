@@ -2,78 +2,158 @@
 {% load static %}
 {% block content %}
 
-<div class="student-list">
-<div class="container">
-  {% if class_students_list.count == 0 %}
-    <h1>No students in the class.</h1>
-    {% else %}
-
-  <form method='GET' action="{% url 'classroom:class_student_list' %}">
-    <p>Search Student: <input type='search' name='q' placeholder='Search'></p>
-  </form>
-  <div class="row">
-  {% for student in class_students_list %}
-  <div class="col-6 col-md-4">
-  <div class="student-box">
-    <div class="imgBx">
-      {% if student.student_profile_pic %}
-      <img src="{{ student.student_profile_pic.url }}" alt="">
-      {% else %}
-      {% if forloop.counter0|divisibleby:"2" %}
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
-      {% else %}
-      <img src="{% static 'images/login-avatar-2.PNG' %}" alt="">
-      {% endif %}
-      {% endif %}
+<div class="container mt-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-user-friends me-2 text-success"></i>
+        My Class Students
+      </h1>
+      <p class="text-muted mb-0">Students enrolled in your class</p>
     </div>
-    <div class="content">
-      <h3>{{ student.name }}</h3>
-      <p><i class="far fa-user"></i> Username: {{ student.user.username }}</p>
-      <p><i class="fal fa-user-tag"></i> Roll No.: {{ student.roll_no }}</p>
-      <p><i class="far fa-phone"></i> Phone: {{ student.phone }}</p>
-      <p><i class="far fa-envelope-open-text"></i> Email ID: {{ student.email }}</p>
-      <a href="{% url 'classroom:student_marks_list' pk=student.pk %}"><p class="add-button">View Marks Profile</p></a>
+    <div class="d-flex gap-2">
+      <form method='GET' action="{% url 'classroom:class_student_list' %}" class="d-flex">
+        <input type='search' name='q' placeholder='Search students...' class="form-control me-2" value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+      <a href="{% url 'classroom:students_list' %}" class="btn btn-success">
+        <i class="fas fa-plus me-2"></i>Add Students
+      </a>
     </div>
   </div>
-  </div>
-  {% endfor %}
-  </div>
-</div>
-{% endif %}
-</div>
 
-
-<!--
-<div class="jumbotron">
-  {% if teacher.class_students.count == 0 %}
-    <h1>No students in the class.</h1>
-    {% else %}
-    <h1>Your class students list.</h1>
-    <br>
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Roll No.</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email Id</th>
-          <th scope="col"> </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in teacher.class_students.all %}
-        <tr>
-          <th>{{ student.roll_no }}</th>
-          <th>{{ student.name }}</th>
-          <th>{{ student.email }}</th>
-          <th> <a class="btn btn-primary" href="{% url 'classroom:student_marks_list' pk=student.pk %}">View Marks Profile</a> </th>
-        </tr>
-
-        {% endfor %}
-      </tbody>
-    </table>
-    <p><a class="btn btn-danger" href="{% url 'classroom:write_notice' %}">Add Notice</a></p>
+  {% if class_students_list %}
+    <div class="row">
+      {% for student in class_students_list %}
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card student-card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+              <div class="student-avatar mb-3">
+                {% if student.student_profile_pic %}
+                  <img src="{{ student.student_profile_pic.url }}" alt="{{ student.name }}" class="rounded-circle">
+                {% else %}
+                  <div class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <h5 class="card-title mb-2">{{ student.name }}</h5>
+              <p class="text-muted mb-1">{{ student.user.username }}</p>
+              <p class="text-muted mb-3">Roll No: {{ student.roll_no }}</p>
+              
+              <div class="student-info mb-3">
+                <div class="info-row">
+                  <i class="fas fa-phone text-muted me-2"></i>
+                  <span>{{ student.phone }}</span>
+                </div>
+                <div class="info-row">
+                  <i class="fas fa-envelope text-muted me-2"></i>
+                  <span>{{ student.email }}</span>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <a href="{% url 'classroom:student_detail' pk=student.user.pk %}" class="btn btn-primary btn-sm">
+                  <i class="fas fa-eye me-1"></i>View Profile
+                </a>
+                <div class="btn-group" role="group">
+                  <a href="{% url 'classroom:student_marks_list' pk=student.pk %}" class="btn btn-outline-success btn-sm">
+                    <i class="fas fa-chart-line me-1"></i>Marks
+                  </a>
+                  <a href="{% url 'classroom:enter_marks' pk=student.pk %}" class="btn btn-outline-info btn-sm">
+                    <i class="fas fa-plus me-1"></i>Add Marks
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <div class="empty-state">
+        <i class="fas fa-user-slash text-muted mb-3" style="font-size: 4rem;"></i>
+        <h3 class="text-muted mb-3">No Students in Your Class</h3>
+        <p class="text-muted mb-4">You haven't added any students to your class yet.</p>
+        <a href="{% url 'classroom:students_list' %}" class="btn btn-success btn-lg">
+          <i class="fas fa-plus me-2"></i>Add Students to Class
+        </a>
+      </div>
+    </div>
   {% endif %}
-
 </div>
--->
+
+<style>
+  .student-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+  }
+  
+  .student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+  
+  .student-avatar img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    font-size: 2rem;
+  }
+  
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+  
+  .empty-state {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .text-gray-800 {
+    color: #1f2937 !important;
+  }
+  
+  .btn-group .btn {
+    border-radius: 8px !important;
+  }
+  
+  @media (max-width: 768px) {
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .student-card {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+
 {% endblock %}

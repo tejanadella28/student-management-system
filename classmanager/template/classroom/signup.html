@@ -2,17 +2,461 @@
 {% load static %}
 {% block content %}
 
-  <div class="login-page">
-  <img src="{% static 'images/login-background.PNG' %}" alt="">
-    <div class="signup">
-      <h1>Sign Up</h1>
-      <br>
-      <a href="{% url 'classroom:StudentSignUp' %}"><p>I'm a Student</p> </a>
-      <br>
-      <a href="{% url 'classroom:TeacherSignUp' %}"><p>I'm a Teacher</p> </a>
+<div class="signup-page">
+  <div class="signup-background">
+    <div class="signup-particles"></div>
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
     </div>
+  </div>
+  
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-lg-10 col-xl-8">
+        <div class="signup-form">
+          <div class="text-center mb-5">
+            <div class="logo mb-4">
+              <div class="logo-circle">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+            </div>
+            <h1 class="signup-title">Join Class Manager</h1>
+            <p class="signup-subtitle">Choose your role and start your educational journey</p>
+          </div>
+          
+          <div class="role-selection">
+            <div class="row g-4">
+              <!-- Student Option -->
+              <div class="col-md-6">
+                <a href="{% url 'classroom:StudentSignUp' %}" class="role-option student-option">
+                  <div class="role-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                      <div class="role-icon student-icon">
+                        <i class="fas fa-user-graduate"></i>
+                      </div>
+                      <div class="role-info">
+                        <h3>Student</h3>
+                        <p>Access courses, submit assignments, and track your academic progress</p>
+                      </div>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-book-open"></i>
+                          <span>Access Assignments</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-chart-line"></i>
+                          <span>Track Progress</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-bell"></i>
+                          <span>Get Notifications</span>
+                        </div>
+                      </div>
+                      <div class="action-button">
+                        <span>Sign up as Student</span>
+                        <i class="fas fa-arrow-right"></i>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              
+              <!-- Teacher Option -->
+              <div class="col-md-6">
+                <a href="{% url 'classroom:TeacherSignUp' %}" class="role-option teacher-option">
+                  <div class="role-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                      <div class="role-icon teacher-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                      </div>
+                      <div class="role-info">
+                        <h3>Teacher</h3>
+                        <p>Create classes, manage students, and deliver engaging content</p>
+                      </div>
+                      <div class="role-features">
+                        <div class="feature-item">
+                          <i class="fas fa-users"></i>
+                          <span>Manage Students</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-file-upload"></i>
+                          <span>Upload Content</span>
+                        </div>
+                        <div class="feature-item">
+                          <i class="fas fa-clipboard-check"></i>
+                          <span>Grade Work</span>
+                        </div>
+                      </div>
+                      <div class="action-button">
+                        <span>Sign up as Teacher</span>
+                        <i class="fas fa-arrow-right"></i>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="signup-footer">
+            <div class="divider">
+              <span>or</span>
+            </div>
+            <p class="login-link">
+              Already have an account? 
+              <a href="{% url 'classroom:login' %}">Sign in here</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --student-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --teacher-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --card-shadow: 0 25px 50px rgba(0,0,0,0.15);
+  }
 
+  /* Background */
+  .signup-page {
+    position: relative;
+    background: var(--primary-gradient);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .signup-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .signup-particles::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: particles 25s linear infinite;
+  }
+
+  @keyframes particles {
+    0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
+
+  /* Floating Shapes */
+  .floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    animation: float 20s infinite ease-in-out;
+  }
+
+  .shape-1 { width: 100px; height: 100px; top: 20%; left: 10%; animation-delay: 0s; }
+  .shape-2 { width: 150px; height: 150px; top: 60%; right: 10%; animation-delay: 5s; }
+  .shape-3 { width: 80px; height: 80px; bottom: 20%; left: 20%; animation-delay: 10s; }
+  .shape-4 { width: 120px; height: 120px; top: 30%; right: 30%; animation-delay: 15s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* Main Form */
+  .signup-form {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Header */
+  .logo-circle {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4); }
+  }
+
+  .signup-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  .signup-subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  /* Role Cards */
+  .role-option {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .role-card {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 20px;
+    transition: all 0.4s ease;
+    z-index: 1;
+  }
+
+  .role-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--card-shadow);
+  }
+
+  .student-option:hover .role-card {
+    border-color: #10b981;
+  }
+
+  .student-option:hover .card-glow {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+  }
+
+  .teacher-option:hover .role-card {
+    border-color: #f59e0b;
+  }
+
+  .teacher-option:hover .card-glow {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 2;
+    padding: 2.5rem 2rem;
+  }
+
+  /* Role Icons */
+  .role-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+
+  .student-icon {
+    background: var(--student-gradient);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  }
+
+  .teacher-icon {
+    background: var(--teacher-gradient);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+  }
+
+  /* Role Info */
+  .role-info {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .role-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+  }
+
+  .role-info p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Features */
+  .role-features {
+    margin-bottom: 2rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #4b5563;
+  }
+
+  .feature-item i {
+    width: 16px;
+    color: #9ca3af;
+  }
+
+  .student-option .feature-item i {
+    color: #10b981;
+  }
+
+  .teacher-option .feature-item i {
+    color: #f59e0b;
+  }
+
+  /* Action Button */
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    transition: all 0.3s ease;
+  }
+
+  .action-button i {
+    transition: transform 0.3s ease;
+  }
+
+  .role-card:hover .action-button {
+    background: #f3f4f6;
+  }
+
+  .role-card:hover .action-button i {
+    transform: translateX(5px);
+  }
+
+  /* Footer */
+  .signup-footer {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .divider {
+    position: relative;
+    margin: 2rem 0;
+  }
+
+  .divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e5e7eb;
+  }
+
+  .divider span {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0 1rem;
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+
+  .login-link {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  .login-link a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  .login-link a:hover {
+    color: #4f46e5;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .signup-form {
+      padding: 2rem 1.5rem;
+      margin: 1rem;
+    }
+    
+    .signup-title {
+      font-size: 2rem;
+    }
+    
+    .card-content {
+      padding: 2rem 1.5rem;
+    }
+    
+    .role-icon {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+    
+    .logo-circle {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+  }
+</style>
 
 {% endblock %}

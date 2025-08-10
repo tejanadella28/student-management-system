@@ -1,41 +1,133 @@
 {% extends 'classroom/base.html' %}
-{% load static %}
+{% load bootstrap4 %}
 {% block content %}
 
-
-
 <div class="login-page">
-  <img src="{% static 'images/login-background.PNG' %}" alt="">
-  <div class="login-form">
-    <div class="avatar">
-      <img src="{% static 'images/login-avatar.PNG' %}" alt="">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-md-6 col-lg-5">
+        <div class="login-form">
+          <div class="text-center mb-4">
+            <div class="logo mb-3">
+              <i class="fas fa-graduation-cap text-primary" style="font-size: 3rem;"></i>
+            </div>
+            <h1 class="h3 mb-3">Welcome Back</h1>
+            <p class="text-muted">Sign in to your account as a Student or Teacher</p>
+          </div>
+          
+          <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Please check your credentials and try again.
+              </div>
+            {% endif %}
+            
+            <div class="mb-3">
+              <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" class="form-control" name="username" placeholder="Enter your username" required id="{{ form.username.id_for_label }}">
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" name="password" placeholder="Enter your password" required id="{{ form.password.id_for_label }}">
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+              </button>
+            </div>
+          </form>
+          
+          <div class="text-center mt-4">
+            <div class="alert alert-info mb-3">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>For Teachers:</strong> Use the same login form to access your teacher dashboard
+            </div>
+            <p class="text-muted">
+              Don't have an account? 
+              <a href="{% url 'classroom:signup' %}" class="text-primary">Sign up here</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-    {% if messages %}
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-      {% for message in messages %}
-        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
-      {% endfor %}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endif %}
-    <h1>Login</h1>
-    <form action="{% url 'classroom:login' %}" method="post">
-      {% csrf_token %}
-      <p>Username:</p>
-      <input type="text" name="username" placeholder="Enter your username">
-      <br>
-      <br>
-      <p>Password:</p>
-      <input type="password" name="password" placeholder="Enter password">
-      <br>
-      <br>
-      <input class="btn btn-primary" type="submit" name="" value="Login">
-    </form>
-    <a href="{% url 'classroom:signup' %}">Don't have an account.</a>
   </div>
 </div>
 
-
+<style>
+  .login-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+  
+  .login-form {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-group-text {
+    border-radius: 8px 0 0 8px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+  }
+  
+  .form-control {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #dee2e6;
+  }
+  
+  .form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+    border-left: none;
+  }
+  
+  .input-group:focus-within .input-group-text {
+    border-color: #4f46e5;
+    background: #e0e7ff;
+    color: #4f46e5;
+  }
+  
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #5b21b6 100%);
+    transform: translateY(-1px);
+  }
+  
+  .form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  
+  .alert {
+    border-radius: 8px;
+    border: none;
+  }
+</style>
 {% endblock %}
