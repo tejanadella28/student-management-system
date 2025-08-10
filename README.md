@@ -24,7 +24,7 @@ A **modern Django-based Student Management System** with a **clean, responsive, 
 | Home page | Student login | teacher login |
 |-----------|--------------|-------------|
 | ![Dashboard](Screenshot 2025-08-10 145850.png
-) | ![Student login](Screenshot 2025-08-10 145926.png) | ![teacher login](Screenshot 2025-08-10 145907.png)
+) | ![Student login](https://github.com/tejanadella28/student-management-system/blob/main/Screenshot%202025-08-10%20145850.png) | ![teacher login](Screenshot 2025-08-10 145907.png)
 
 *(Replace image paths with actual screenshot filenames from your repo)*
 
